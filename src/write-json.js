@@ -19,7 +19,7 @@ export default async function WriteJSON(type = null, suppressLogs = false) {
 	let files = cacheFiles.filter((x) => x.match(/.csv$/));
 
 	if (type) {
-		files = files.filter((f) => f.inludes(`-${type}-`));
+		files = files.filter((f) => f.includes(`-${type}-`));
 	}
 
 	const results = [];
