@@ -1838,9 +1838,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-boilerplate@workspace:.":
+"noaa-stormevents@workspace:.":
   version: 0.0.0-use.local
-  resolution: "node-boilerplate@workspace:."
+  resolution: "noaa-stormevents@workspace:."
   dependencies:
     "@yarnpkg/sdks": ^2.6.0-rc.7
     csvtojson: ^2.0.10
