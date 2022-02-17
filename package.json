@@ -1,10 +1,17 @@
 {
 	"name": "noaa-stormevents",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"main": "src/index.js",
 	"type": "module",
 	"packageManager": "yarn@3.1.1",
 	"license": "MIT",
+	"author": "Jon Shipman <jon@jonshipman.com>",
+  "homepage": "https://github.com/jonshipman/noaa-stormevents",
+  "bugs": "https://github.com/jonshipman/noaa-stormevents/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jonshipman/noaa-stormevents.git"
+  },
 	"devDependencies": {
 		"@yarnpkg/sdks": "^2.6.0-rc.7",
 		"eslint": "^8.9.0",
