@@ -1,8 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-import { Config } from '../config.js';
-
 let cachefolderexists = false;
 
 /**
@@ -15,19 +13,25 @@ export default async function getCacheFiles() {
 		await CacheFolderEnsure();
 	}
 
-	const files = await fs.readdir(Config.cache);
+	const files = await fs.readdir(getCacheFiles.cachepath);
 
 	return files
 		.filter((f) => f.includes('StormEvents_'))
-		.map((f) => path.join(Config.cache, f));
+		.map((f) => path.join(getCacheFiles.cachepath, f));
 }
+
+getCacheFiles.cachepath = path.join('.cache');
+
+getCacheFiles.setCachePath = function (str) {
+	getCacheFiles.cachepath = str;
+};
 
 /**
  * Creates the .cache folder.
  */
 async function CacheFolderEnsure() {
 	try {
-		await fs.mkdir(Config.cache);
+		await fs.mkdir(getCacheFiles.cachepath);
 		cachefolderexists = true;
 	} catch (e) {
 		// Folder exists.

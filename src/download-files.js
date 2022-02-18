@@ -3,7 +3,6 @@ import http from 'http';
 import https from 'https';
 import path from 'path';
 
-import { Config } from '../config.js';
 import getCacheFiles from './get-cache-files.js';
 
 /**
@@ -19,7 +18,7 @@ export default async function DownloadFiles(links, suppressLogs = false) {
 
 	for (const link of links) {
 		let filename = link.substring(link.lastIndexOf('/') + 1);
-		const filepath = path.join(Config.cache, filename);
+		const filepath = path.join(getCacheFiles.cachepath, filename);
 
 		if (cachedFiles.includes(filepath)) {
 			files.push(filepath);
