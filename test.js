@@ -1,6 +1,7 @@
 import DownloadFiles from './src/download-files.js';
 import ExtractCacheFiles from './src/extract-cache-files.js';
 import getCacheFiles from './src/get-cache-files.js';
+import Info from './src/info.js';
 import NOAAStormEvents from './src/noaa-stormevents.js';
 import PullLinks from './src/pull-links.js';
 import WriteJSON from './src/write-json.js';
@@ -71,4 +72,24 @@ async function TestNOAA() {
 
 if ('6' === process.argv[2]) {
 	TestNOAA();
+}
+
+// Tests Info file.
+async function TestInfo() {
+	const info = await Info.readValue('debug');
+	console.log(info, Info._json);
+}
+
+if ('7' === process.argv[2]) {
+	TestInfo();
+}
+
+// Tests Info write.
+async function TestInfoWrite() {
+	await Info.writeValue('debug', [process.argv[3] || 'test']);
+	console.log(Info._json);
+}
+
+if ('8' === process.argv[2]) {
+	TestInfoWrite();
 }
