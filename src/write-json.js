@@ -32,6 +32,13 @@ export default async function WriteJSON(type = null, suppressLogs = false) {
 				console.log('Skipping;', newFile, 'exists');
 			}
 
+			try {
+				await fs.unlink(file);
+			} catch (e) {
+				if (!suppressLogs) {
+					console.error('Unable to delete', file);
+				}
+			}
 			results.push(newFile);
 			continue;
 		}
@@ -61,6 +68,13 @@ export default async function WriteJSON(type = null, suppressLogs = false) {
 			console.log(newFile, 'written');
 		}
 
+		try {
+			await fs.unlink(file);
+		} catch (e) {
+			if (!suppressLogs) {
+				console.error('Unable to delete', file);
+			}
+		}
 		results.push(newFile);
 	}
 

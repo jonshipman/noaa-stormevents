@@ -53,11 +53,13 @@ Info.read = async function () {
  * Returns a specific value.
  *
  * @param {string} key Key to retrieve the value for from info.
+ * @param {any} _default Optional. Default value to return if nothing found in
+ *                       info.
  * @return {any}
  */
-Info.readValue = async function (key) {
+Info.readValue = async function (key, _default) {
 	const file = await Info.read();
-	return file[key];
+	return file[key] || _default;
 };
 
 /**

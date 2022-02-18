@@ -20,6 +20,10 @@ NOAA();
 
 ``NOAAStormEvents`` takes two parameters, type``[0]`` and suppressLogs``[1]``. Type can be one of 'details', 'locations', or 'fatalities'. Supply null to loop over everything. If you supply true in the second spot, stdout logging will be suppressed.
 
+``NOAAStormEvents.onlyNew`` mirrors ``NOAAStormEvents`` with the exception of only parsing and returning new links.
+
+``getCacheFiles.setCachePath`` will allow you to change the cache path from .cache to any dir of your choosing. Must be set before running any of the other functions, otherwise .cache will be used/created.
+
 ## Exports
 
 In addition to the default export, you also have access to the following:
@@ -28,6 +32,7 @@ In addition to the default export, you also have access to the following:
 * getCacheFiles
 * PullLinks
 * WriteJSON
+* Info
 
 Useage would follow this pattern:
 ```

@@ -1,5 +1,7 @@
-import getCacheFiles from './get-cache-files.js';
+import fs from 'fs/promises';
 import gunzip from 'gunzip-file';
+
+import getCacheFiles from './get-cache-files.js';
 
 /**
  * Extracts all the .gz files in the cache directory, returning the path of the
@@ -9,7 +11,10 @@ import gunzip from 'gunzip-file';
  * @return {string[]} File paths.
  */
 export default async function ExtractCacheFiles(suppressLogs = false) {
-	const files = await getCacheFiles();
+	const cacheFiles = await getCacheFiles();
+
+	let files = cacheFiles.filter((x) => x.match(/.csv.gz$/));
+
 	const extracted = [];
 
 	for (const file of files) {
@@ -20,6 +25,13 @@ export default async function ExtractCacheFiles(suppressLogs = false) {
 				console.log(newFile, 'exists\n  Extraction skipped');
 			}
 
+			try {
+				await fs.unlink(file);
+			} catch (e) {
+				if (!suppressLogs) {
+					console.error('Unable to delete', file);
+				}
+			}
 			extracted.push(newFile);
 			continue;
 		}
@@ -38,6 +50,14 @@ export default async function ExtractCacheFiles(suppressLogs = false) {
 
 		if (!suppressLogs) {
 			console.log(newFile, 'extracted');
+		}
+
+		try {
+			await fs.unlink(file);
+		} catch (e) {
+			if (!suppressLogs) {
+				console.error('Unable to delete', file);
+			}
 		}
 
 		extracted.push(newFile);

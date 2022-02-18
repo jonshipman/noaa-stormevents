@@ -93,3 +93,14 @@ async function TestInfoWrite() {
 if ('8' === process.argv[2]) {
 	TestInfoWrite();
 }
+
+// Tests new links.
+async function TestNOAANew() {
+	for await (const result of NOAAStormEvents.onlyNew(process.argv[3])) {
+		console.log(result);
+	}
+}
+
+if ('9' === process.argv[2]) {
+	TestNOAANew();
+}

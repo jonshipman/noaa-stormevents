@@ -4,6 +4,7 @@ import https from 'https';
 import path from 'path';
 
 import getCacheFiles from './get-cache-files.js';
+import Info from './info.js';
 
 /**
  * Downloads files (links) to the cache directory.
@@ -15,12 +16,14 @@ export default async function DownloadFiles(links, suppressLogs = false) {
 	const files = [];
 
 	const cachedFiles = await getCacheFiles();
+	let history = await Info.readValue('history', []);
 
 	for (const link of links) {
 		let filename = link.substring(link.lastIndexOf('/') + 1);
 		const filepath = path.join(getCacheFiles.cachepath, filename);
 
 		if (cachedFiles.includes(filepath)) {
+			history.push(link);
 			files.push(filepath);
 			continue;
 		}
@@ -53,8 +56,10 @@ export default async function DownloadFiles(links, suppressLogs = false) {
 			console.log('Wrote', filepath, '\n');
 		}
 
+		history.push(link);
 		files.push(filepath);
 	}
 
+	await Info.writeValue('history', [...new Set(history)]);
 	return files;
 }

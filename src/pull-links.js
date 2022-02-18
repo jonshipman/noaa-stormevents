@@ -2,6 +2,7 @@ import got from 'got';
 import { JSDOM } from 'jsdom';
 
 import { Config } from '../config.js';
+import Info from './info.js';
 
 /**
  * Grabs all the StormEvents Links.
@@ -10,6 +11,8 @@ import { Config } from '../config.js';
  */
 export default async function PullLinks() {
 	let response;
+
+	const history = await Info.readValue('history', []);
 
 	try {
 		response = await got(Config.url);
@@ -25,7 +28,8 @@ export default async function PullLinks() {
 	const links = [...dom.window.document.querySelectorAll('a')]
 		.map((a) => a.href)
 		.filter((a) => a.includes('.csv.gz'))
-		.map((a) => Config.url + '/' + a);
+		.map((a) => Config.url + '/' + a)
+		.filter((a) => !history.includes(a));
 
 	return links;
 }
