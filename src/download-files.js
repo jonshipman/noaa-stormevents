@@ -1,5 +1,4 @@
 import fsLegacy from 'fs';
-import fs from 'fs/promises';
 import http from 'http';
 import https from 'https';
 import path from 'path';
@@ -14,7 +13,6 @@ import getCacheFiles from './get-cache-files.js';
  * @param {boolean} suppressLogs When true, prevents logging to stdout.
  */
 export default async function DownloadFiles(links, suppressLogs = false) {
-	await CacheFolderEnsure();
 	const files = [];
 
 	const cachedFiles = await getCacheFiles();
@@ -60,15 +58,4 @@ export default async function DownloadFiles(links, suppressLogs = false) {
 	}
 
 	return files;
-}
-
-/**
- * Creates the .cache folder.
- */
-export async function CacheFolderEnsure() {
-	try {
-		await fs.mkdir(Config.cache);
-	} catch (e) {
-		// Folder exists.
-	}
 }
