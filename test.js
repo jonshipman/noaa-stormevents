@@ -6,7 +6,6 @@ import getCacheFiles from './src/get-cache-files.js';
 import Info from './src/info.js';
 import NOAAStormEvents from './src/noaa-stormevents.js';
 import PullLinks from './src/pull-links.js';
-import WriteJSON from './src/write-json.js';
 
 // Pulls in the URLS.
 async function TestUrls() {
@@ -52,17 +51,6 @@ async function TestExtraction() {
 
 if ('4' === process.argv[2]) {
 	TestExtraction();
-}
-
-// Extracts the cached files.
-async function TestJSON() {
-	const results = await WriteJSON(process.argv[3]);
-
-	console.log(results);
-}
-
-if ('5' === process.argv[2]) {
-	TestJSON();
 }
 
 // Tests whole process.

@@ -36,28 +36,26 @@ export default async function DownloadFiles(links, suppressLogs = false) {
 			console.log('Downloading', link, '\n');
 		}
 
-		await (() => {
-			return new Promise((resolve, reject) => {
-				protocol.get(link, (res) => {
-					res.pipe(file);
+		await new Promise((resolve, reject) => {
+			protocol.get(link, (res) => {
+				res.pipe(file);
 
-					file.on('finish', () => {
-						file.close(resolve);
-					});
+				file.on('finish', () => {
+					file.close(resolve);
+				});
 
-					file.on('error', () => {
-						reject();
-					});
+				file.on('error', () => {
+					reject();
 				});
 			});
-		})();
+		});
+
+		history.push(link);
+		files.push(filepath);
 
 		if (!suppressLogs) {
 			console.log('Wrote', filepath, '\n');
 		}
-
-		history.push(link);
-		files.push(filepath);
 	}
 
 	await Info.writeValue('history', [...new Set(history)]);

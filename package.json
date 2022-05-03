@@ -6,12 +6,12 @@
 	"packageManager": "yarn@3.1.1",
 	"license": "MIT",
 	"author": "Jon Shipman <jon@jonshipman.com>",
-  "homepage": "https://github.com/jonshipman/noaa-stormevents",
-  "bugs": "https://github.com/jonshipman/noaa-stormevents/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jonshipman/noaa-stormevents.git"
-  },
+	"homepage": "https://github.com/jonshipman/noaa-stormevents",
+	"bugs": "https://github.com/jonshipman/noaa-stormevents/issues",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jonshipman/noaa-stormevents.git"
+	},
 	"devDependencies": {
 		"@yarnpkg/sdks": "^2.6.0-rc.7",
 		"eslint": "^8.9.0",
@@ -21,7 +21,7 @@
 		"prettier": "^2.5.1"
 	},
 	"dependencies": {
-		"csvtojson": "^2.0.10",
+		"csv-parse": "^5.0.4",
 		"got": "^12.0.1",
 		"gunzip-file": "^0.1.1",
 		"jsdom": "^19.0.0"

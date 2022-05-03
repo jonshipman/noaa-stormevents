@@ -32,7 +32,7 @@ export default async function ExtractCacheFiles(suppressLogs = false) {
 					console.error('Unable to delete', file);
 				}
 			}
-			extracted.push(newFile);
+
 			continue;
 		}
 

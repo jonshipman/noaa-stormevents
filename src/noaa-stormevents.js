@@ -1,11 +1,9 @@
-import fs from 'fs/promises';
-
 import DownloadFiles from './download-files.js';
 import ExtractCacheFiles from './extract-cache-files.js';
 import getCacheFiles from './get-cache-files.js';
 import Info from './info.js';
 import PullLinks from './pull-links.js';
-import WriteJSON from './write-json.js';
+import ReadCSV from './read-csv.js';
 
 /**
  * NOAAStormEvents params.
@@ -46,7 +44,8 @@ export default async function* NOAAStormEvents(
 	const links = await PullLinks();
 
 	if (onlyNew && 0 === links.length) {
-		yield;
+		yield undefined;
+		return;
 	}
 
 	let files = [];
@@ -54,41 +53,20 @@ export default async function* NOAAStormEvents(
 	if (links.length > 0) {
 		await DownloadFiles(links, suppressLogs);
 
-		await ExtractCacheFiles(suppressLogs);
-
-		files = await WriteJSON(type, suppressLogs);
-	}
-
-	if (!onlyNew) {
+		files = await ExtractCacheFiles(suppressLogs);
+	} else {
 		const cacheFiles = await getCacheFiles();
 
-		files = cacheFiles.filter((x) => x.match(/.json$/));
+		files = cacheFiles.filter((x) => x.match(/.csv$/));
+	}
+
+	if (type) {
+		files = files.filter((f) => f.includes(`StormEvents_${type}-`));
 	}
 
 	for (const file of files) {
-		const contents = await fs.readFile(file);
-
-		if (contents) {
-			let json;
-
-			try {
-				json = JSON.parse(contents);
-			} catch (e) {
-				if (!suppressLogs) {
-					console.error(
-						'Unable to read',
-						file,
-						'; Error as follows:',
-						e.message
-					);
-				}
-			}
-
-			if (json) {
-				for (const item of json) {
-					yield item;
-				}
-			}
+		for await (const row of ReadCSV(file)) {
+			yield row;
 		}
 	}
 }
