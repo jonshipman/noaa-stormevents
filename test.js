@@ -1,3 +1,5 @@
+import fs from 'fs/promises';
+
 import DownloadFiles from './src/download-files.js';
 import ExtractCacheFiles from './src/extract-cache-files.js';
 import getCacheFiles from './src/get-cache-files.js';
@@ -103,4 +105,49 @@ async function TestNOAANew() {
 
 if ('9' === process.argv[2]) {
 	TestNOAANew();
+}
+
+// Tests info replacer.
+async function TestInfoReplace() {
+	const MyInfo = {
+		async read() {
+			console.log('Using Custom MyInfo.read', this);
+
+			if (null !== Info._json) {
+				return Info._json;
+			}
+
+			let file;
+
+			try {
+				file = await fs.readFile(Info.filepath);
+			} catch (e) {
+				// intentionally left blank.
+			}
+
+			let json = {};
+
+			if (file) {
+				try {
+					json = JSON.parse(file);
+				} catch (e) {
+					// intentionally left blank.
+				}
+			}
+
+			Info._json = json;
+
+			console.log(this);
+
+			return json;
+		},
+	};
+
+	for await (const result of NOAAStormEvents.onlyNew({ cacher: MyInfo })) {
+		console.log(result);
+	}
+}
+
+if ('10' === process.argv[2]) {
+	TestInfoReplace();
 }

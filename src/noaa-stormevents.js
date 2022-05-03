@@ -3,33 +3,67 @@ import fs from 'fs/promises';
 import DownloadFiles from './download-files.js';
 import ExtractCacheFiles from './extract-cache-files.js';
 import getCacheFiles from './get-cache-files.js';
+import Info from './info.js';
 import PullLinks from './pull-links.js';
 import WriteJSON from './write-json.js';
 
 /**
+ * NOAAStormEvents params.
+ * @typedef {Object} NOAAStormEventsProps
+ * @property {string} type Optional. Null for all; details, locations, or fatalities.
+ * @property {boolean} suppressLogs Optional. When true, prevents logging to stdout.
+ * @property {boolean} onlyNew Optional. Only process new entries.
+ * @property {Function} cacher Optional. Replacement for the Info object.
+ */
+
+/**
  * Wraps all utility functions into one self-contained function.
  *
- * @param {string} type Optional. Null for all; details, locations, or
- *                      fatalities.
- * @param {boolean} suppressLogs When true, prevents logging to stdout.
+ * @param {NOAAStormEventsProps} props Properties to setup.
+ * @param {boolean} _suppressLogs Deprecated. When true, prevents logging to stdout.
  */
 export default async function* NOAAStormEvents(
-	type = null,
-	suppressLogs = false
+	_props = {},
+	_suppressLogs = false
 ) {
+	let type = null;
+	let suppressLogs = _suppressLogs;
+	let props = _props || {};
+
+	if ('string' === typeof props) {
+		type = props;
+		props = {};
+	} else {
+		({ type = null, suppressLogs = false } = props || {});
+	}
+
+	const { onlyNew = false, cacher = null } = props || {};
+
+	if (cacher) {
+		Info.replace(cacher);
+	}
+
 	const links = await PullLinks();
+
+	if (onlyNew && 0 === links.length) {
+		yield;
+	}
+
+	let files = [];
 
 	if (links.length > 0) {
 		await DownloadFiles(links, suppressLogs);
 
 		await ExtractCacheFiles(suppressLogs);
 
-		await WriteJSON(type, suppressLogs);
+		files = await WriteJSON(type, suppressLogs);
 	}
 
-	const cacheFiles = await getCacheFiles();
+	if (!onlyNew) {
+		const cacheFiles = await getCacheFiles();
 
-	const files = cacheFiles.filter((x) => x.match(/.json$/));
+		files = cacheFiles.filter((x) => x.match(/.json$/));
+	}
 
 	for (const file of files) {
 		const contents = await fs.readFile(file);
@@ -62,47 +96,34 @@ export default async function* NOAAStormEvents(
 /**
  * Same as parent function, but only parses new downloads.
  *
- * @param {string} type Optional. Null for all; details, locations, or
- *                      fatalities.
- * @param {boolean} suppressLogs When true, prevents logging to stdout.
+ * @param {NOAAStormEventsProps} _props Properties to setup.
+ * @param {boolean} _suppressLogs Deprecated. When true, prevents logging to stdout.
  */
-NOAAStormEvents.onlyNew = async function* (type = null, suppressLogs = false) {
-	const links = await PullLinks();
+NOAAStormEvents.onlyNew = function (_props = null, _suppressLogs = false) {
+	let type = null;
+	let suppressLogs = _suppressLogs;
+	let props = _props || {};
 
-	if (0 === links.length) {
-		yield;
+	if ('string' === typeof props) {
+		type = props;
+		props = {};
+	} else {
+		({ type = null, suppressLogs = false } = props || {});
 	}
 
-	await DownloadFiles(links, suppressLogs);
+	const passed = { type, suppressLogs, ...props, onlyNew: true };
 
-	await ExtractCacheFiles(suppressLogs);
+	const inter = {
+		[Symbol.asyncIterator]() {
+			const main = NOAAStormEvents(passed);
 
-	const files = await WriteJSON(type, suppressLogs);
+			return {
+				async next() {
+					return await main.next();
+				},
+			};
+		},
+	};
 
-	for (const file of files) {
-		const contents = await fs.readFile(file);
-
-		if (contents) {
-			let json;
-
-			try {
-				json = JSON.parse(contents);
-			} catch (e) {
-				if (!suppressLogs) {
-					console.error(
-						'Unable to read',
-						file,
-						'; Error as follows:',
-						e.message
-					);
-				}
-			}
-
-			if (json) {
-				for (const item of json) {
-					yield item;
-				}
-			}
-		}
-	}
+	return inter;
 };

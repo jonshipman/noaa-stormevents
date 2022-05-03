@@ -76,3 +76,16 @@ Info.writeValue = async function (key, value) {
 
 	await fs.writeFile(Info.filepath, JSON.stringify(file));
 };
+
+/**
+ * Replaces the properties in Info with a custom object.
+ *
+ * @param {Object} obj Static object functions that can replace all (or some) of
+ *                     the other Info functions. Useful if you want to store the
+ *                      history/info in a database as opposed to a filesystem.
+ */
+Info.replace = function (obj) {
+	for (const [key, value] of Object.entries(obj)) {
+		Info[key] = value;
+	}
+};
