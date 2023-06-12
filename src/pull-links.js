@@ -1,7 +1,6 @@
 import got from 'got';
-import { JSDOM } from 'jsdom';
 
-import { Config } from '../config.js';
+import { Config } from './config.js';
 import Info from './info.js';
 
 /**
@@ -24,10 +23,12 @@ export default async function PullLinks() {
 		throw new Error(`No response from ${Config.url}`);
 	}
 
-	const dom = new JSDOM(response.body);
-	const links = [...dom.window.document.querySelectorAll('a')]
-		.map((a) => a.href)
-		.filter((a) => a.includes('.csv.gz'))
+	const links = response.body
+		.match(/<a[^>]*>([^<]+)<\/a>/g)
+		.filter((x) => x.includes('.csv.gz'))
+		.map((x) => {
+			return x.match(/href="(.*?)"/)[1];
+		})
 		.map((a) => Config.url + '/' + a)
 		.filter((a) => !history.includes(a));
 

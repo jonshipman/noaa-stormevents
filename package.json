@@ -1,9 +1,15 @@
 {
 	"name": "noaa-stormevents",
-	"version": "0.1.5",
-	"main": "src/index.js",
-	"type": "module",
-	"packageManager": "yarn@3.1.1",
+	"version": "0.1.6",
+	"main": "cjs/index.js",
+	"type": "commonjs",
+	"exports": {
+		"require": "./cjs/index.js",
+		"default": "./src/index.js"
+	},
+	"engines": {
+		"node": "^10.10 || >=18.11"
+	},
 	"license": "MIT",
 	"author": "Jon Shipman <jon@jonshipman.com>",
 	"homepage": "https://github.com/jonshipman/noaa-stormevents",
@@ -13,20 +19,29 @@
 		"url": "https://github.com/jonshipman/noaa-stormevents.git"
 	},
 	"devDependencies": {
-		"@yarnpkg/sdks": "^2.6.0-rc.7",
+		"@babel/core": "^7.22.5",
+		"@babel/preset-env": "^7.22.5",
+		"@rollup/plugin-babel": "^6.0.3",
+		"@rollup/plugin-commonjs": "^25.0.1",
+		"@rollup/plugin-json": "^6.0.0",
+		"@rollup/plugin-node-resolve": "^15.1.0",
+		"babel-plugin-search-and-replace": "^1.1.1",
+		"babel-plugin-transform-import-meta": "^2.2.0",
 		"eslint": "^8.9.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-node": "^11.1.0",
 		"eslint-plugin-prettier": "^4.0.0",
-		"prettier": "^2.5.1"
+		"prettier": "^2.5.1",
+		"rimraf": "^5.0.1"
 	},
 	"dependencies": {
 		"csv-parse": "^5.0.4",
 		"got": "^12.0.1",
-		"gunzip-file": "^0.1.1",
-		"jsdom": "^19.0.0"
+		"gunzip-file": "^0.1.1"
 	},
 	"scripts": {
-		"test": "node test.js"
+		"test": "node test.mjs",
+		"prebuild": "rimraf cjs",
+		"build": "rollup -c"
 	}
 }

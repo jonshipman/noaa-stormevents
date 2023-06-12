@@ -1,4 +1,4 @@
-import fs from 'fs/promises';
+import fs from 'fs';
 import path from 'path';
 
 import getCacheFiles from './get-cache-files.js';
@@ -29,7 +29,7 @@ Info.read = async function () {
 	let file;
 
 	try {
-		file = await fs.readFile(Info.filepath);
+		file = await fs.promises.readFile(Info.filepath);
 	} catch (e) {
 		// intentionally left blank.
 	}
@@ -74,7 +74,7 @@ Info.writeValue = async function (key, value) {
 	file[key] = value;
 	Info._json = file;
 
-	await fs.writeFile(Info.filepath, JSON.stringify(file));
+	await fs.promises.writeFile(Info.filepath, JSON.stringify(file));
 };
 
 /**

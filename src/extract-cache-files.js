@@ -1,4 +1,4 @@
-import fs from 'fs/promises';
+import fs from 'fs';
 import gunzip from 'gunzip-file';
 
 import getCacheFiles from './get-cache-files.js';
@@ -26,7 +26,7 @@ export default async function ExtractCacheFiles(suppressLogs = false) {
 			}
 
 			try {
-				await fs.unlink(file);
+				await fs.promises.unlink(file);
 			} catch (e) {
 				if (!suppressLogs) {
 					console.error('Unable to delete', file);
@@ -53,7 +53,7 @@ export default async function ExtractCacheFiles(suppressLogs = false) {
 		}
 
 		try {
-			await fs.unlink(file);
+			await fs.promises.unlink(file);
 		} catch (e) {
 			if (!suppressLogs) {
 				console.error('Unable to delete', file);

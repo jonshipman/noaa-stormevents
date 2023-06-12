@@ -1,7 +1,7 @@
 {
 	"env": {
 		"node": true,
-    "es6": true
+		"es6": true
 	},
 	"extends": ["eslint:recommended", "prettier"],
 	"globals": {
@@ -22,7 +22,8 @@
 				"argsIgnorePattern": "^_"
 			}
 		],
-		"no-throw-literal":"off",
+		"no-throw-literal": "off",
 		"yoda": ["error", "always", { "onlyEquality": true }]
-	}
+	},
+	"ignorePatterns": ["./cjs/*"]
 }

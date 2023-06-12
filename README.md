@@ -16,6 +16,13 @@ async function NOAA() {
 NOAA();
 ```
 
+__Note__:  
+Commonjs exports are named. e.g.:
+
+```
+const { NOAAStormEvents } = require('noaa-stormevents');
+```
+
 ## Options
 
 ``NOAAStormEvents`` takes one object parameter with the following properties:
