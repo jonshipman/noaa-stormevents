@@ -1,6 +1,6 @@
 {
 	"name": "noaa-stormevents",
-	"version": "0.1.6",
+	"version": "0.1.7",
 	"main": "cjs/index.js",
 	"type": "commonjs",
 	"exports": {
@@ -36,7 +36,6 @@
 	},
 	"dependencies": {
 		"csv-parse": "^5.0.4",
-		"got": "^12.0.1",
 		"gunzip-file": "^0.1.1"
 	},
 	"scripts": {

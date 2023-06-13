@@ -25,5 +25,5 @@
 		"no-throw-literal": "off",
 		"yoda": ["error", "always", { "onlyEquality": true }]
 	},
-	"ignorePatterns": ["./cjs/*"]
+	"ignorePatterns": ["cjs/*"]
 }
